@@ -100,4 +100,46 @@ class Ie_Acf_Display_By_Id_Public {
 
 	}
 
+	public function enqueue_shortcode() {
+
+		add_shortcode( 'ie-post-id', array($this, 'display_post_id') );
+
+	}
+
+	// Get the post id from the current post
+	public function display_post_id() {
+		return get_the_ID();
+	}
+
+	function acf_display_by_id() {
+
+		wp_register_script($this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/ie-acf-display-by-id-public.js', array( 'jquery' ), $this->version, false);
+		wp_enqueue_script($this->plugin_name);
+
+		$field_value_data = array(
+			'is_ie_product' => false,
+		);
+
+		if (strpos($_SERVER['REQUEST_URI'], '/request-quote/') !== false && isset($_GET['product_id'])) {
+			$product_id = intval($_GET['product_id']); // Sanitize the product ID
+			$acf_field_name_title = 'title'; // Replace with your actual ACF field name
+			$acf_field_name_desc = 'description'; // Replace with your actual ACF field name
+			$acf_field_name_beds = 'beds'; // Replace with your actual ACF field name
+			$acf_field_name_baths = 'baths'; // Replace with your actual ACF field name
+			$acf_field_name_sq_ft = 'sq_ft'; // Replace with your actual ACF field name
+	
+			$field_value_data = array(
+				'is_ie_product' => true,
+				'ie_title' => get_field($acf_field_name_title, $product_id), 
+				'ie_desc' => get_field($acf_field_name_desc, $product_id), 
+				'ie_beds' => get_field($acf_field_name_beds, $product_id), 
+				'ie_baths' => get_field($acf_field_name_baths, $product_id), 
+				'ie_sq_ft' => get_field($acf_field_name_sq_ft, $product_id), 
+			);
+
+			
+		}
+
+		wp_localize_script($this->plugin_name, 'ie_product_info', $field_value_data);
+	}
 }

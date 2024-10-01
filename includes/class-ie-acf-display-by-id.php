@@ -173,6 +173,9 @@ class Ie_Acf_Display_By_Id {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'init', $plugin_public, 'enqueue_shortcode' , 9 );
+		$this->loader->add_action( 'init', $plugin_public, 'acf_display_by_id', 11 );
+
 	}
 
 	/**
