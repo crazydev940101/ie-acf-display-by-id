@@ -137,9 +137,34 @@ class Ie_Acf_Display_By_Id_Public {
 				'ie_sq_ft' => get_field($acf_field_name_sq_ft, $product_id), 
 			);
 
-			
+			set_transient( 'extra_data', $field_value_data, 60*60 );
 		}
 
 		wp_localize_script($this->plugin_name, 'ie_product_info', $field_value_data);
 	}
+
+	function populate_acf_value($contact_form) {
+		// Get the submitted data
+		$submission = WPCF7_Submission::get_instance();
+		if ($submission) {
+			$data = $submission->get_posted_data();
+
+			if (get_transient('extra_data')) {
+			
+				$extra_data = get_transient('extra_data');
+
+				// Modify the email message
+				$mail = $contact_form->prop('mail');
+				$mail['body'] .= "\n\nProduct Title: " . $extra_data['ie_title'];
+                $mail['body'] .= "\nProduct Description: " . $extra_data['ie_desc'];
+                $mail['body'] .= "\nProduct Beds: " . $extra_data['ie_beds'];
+				$mail['body'] .= "\nProduct Baths: " . $extra_data['ie_baths'];
+				$mail['body'] .= "\nProduct Sq_Ft: " . $extra_data['ie_sq_ft'];
+
+				// Set the modified mail back to the contact form
+				$contact_form->set_properties(array('mail' => $mail));
+			}
+		}
+	}
+
 }

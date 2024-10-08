@@ -176,6 +176,8 @@ class Ie_Acf_Display_By_Id {
 		$this->loader->add_action( 'init', $plugin_public, 'enqueue_shortcode' , 9 );
 		$this->loader->add_action( 'init', $plugin_public, 'acf_display_by_id', 11 );
 
+		$this->loader->add_action( 'wpcf7_before_send_mail', $plugin_public, 'populate_acf_value', 11 );
+
 	}
 
 	/**
